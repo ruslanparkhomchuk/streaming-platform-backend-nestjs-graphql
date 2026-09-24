@@ -1,0 +1,21 @@
+version: "3.7"
+
+services:
+    db:
+        container_name: postgres
+        image: postgres:15.2
+        restart: always
+        enviroment:
+            - POSTGRES_USER=${POSTGRES_USER}
+            - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+        ports:
+            - 5433:5432
+        volumes:
+            - postgres_data:/var/lib/postgresql/data
+        networks:
+            - streaming-platform-backend
+
+volumes:
+    postgres_data:
+
+networks: streaming-platform-backend
