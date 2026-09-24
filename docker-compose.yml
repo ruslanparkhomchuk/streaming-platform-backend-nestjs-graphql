@@ -1,11 +1,11 @@
 version: "3.7"
 
 services:
-    db:
-        container_name: postgres
+    postgres:
+        container_name: streaming-platform-postgres
         image: postgres:15.2
         restart: always
-        enviroment:
+        environment:
             - POSTGRES_USER=${POSTGRES_USER}
             - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
         ports:
@@ -16,7 +16,7 @@ services:
             - streaming-platform-backend
 
     redis:
-        container_name: redis
+        container_name: streaming-platform-redis
         image: redis:5.0
         restart: always
         ports:
@@ -31,4 +31,5 @@ volumes:
     postgres_data:
     redis_data:
 
-networks: streaming-platform-backend
+networks:
+    streaming-platform-backend:

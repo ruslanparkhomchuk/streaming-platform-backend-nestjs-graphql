@@ -7,7 +7,7 @@ import { IS_DEV_ENV } from "@/shared/utils/is-dev.util";
 
 import { getGraphQLConfig } from "./config/graphql.config";
 import { PrismaModule } from "./prisma/prisma.module";
-import { RedisModule } from './redis/redis.module';
+import { RedisModule } from "./redis/redis.module";
 
 @Module({
 	imports: [
