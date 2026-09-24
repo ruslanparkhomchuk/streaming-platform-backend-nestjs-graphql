@@ -1,4 +1,14 @@
 {
-  "extends": "./tsconfig.json",
-  "exclude": ["node_modules", "test", "dist", "**/*spec.ts"]
+	"extends": "./tsconfig.json",
+	"compilerOptions": {
+		"rootDir": "./"
+	},
+	"include": ["src/**/*", "prisma/generated/**/*"],
+	"exclude": [
+		"node_modules",
+		"test",
+		"dist",
+		"**/*spec.ts",
+		"prisma.config.ts"
+	]
 }
