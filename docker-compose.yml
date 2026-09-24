@@ -17,7 +17,7 @@ services:
 
     redis:
         container_name: streaming-platform-redis
-        image: redis:5.0
+        image: redis:7.4
         restart: always
         ports:
             - 6379:6379
