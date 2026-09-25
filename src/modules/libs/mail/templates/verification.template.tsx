@@ -2,13 +2,13 @@ import {
 	Body,
 	Head,
 	Heading,
-	Html,
 	Link,
 	Preview,
 	Section,
 	Tailwind,
 	Text,
 } from "@react-email/components";
+import { Html } from "@react-email/html"
 import * as React from "react";
 
 interface VerificationTemplateProps {
