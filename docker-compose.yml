@@ -27,6 +27,16 @@ services:
         networks:
             - streaming-platform-backend
 
+    mailpit:
+        container_name: streaming-platform-mailpit
+        image: axllent/mailpit
+        restart: always
+        ports:
+            - 1025:1025
+            - 8025:8025
+        networks:
+            - streaming-platform-backend
+
 volumes:
     postgres_data:
     redis_data:

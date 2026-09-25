@@ -1,7 +1,7 @@
 import {
+	BadRequestException,
 	ConflictException,
 	Injectable,
-	InternalServerErrorException,
 	NotFoundException,
 	UnauthorizedException,
 } from "@nestjs/common";
@@ -13,6 +13,9 @@ import type { SessionData } from "express-session";
 import { PrismaService } from "@/core/prisma/prisma.service";
 import { RedisService } from "@/core/redis/redis.service";
 import { getSessionMetadata } from "@/shared/utils/session-metadata.util";
+import { destroySession, saveSession } from "@/shared/utils/session.util";
+
+import { VerificationService } from "../verification/verification.service";
 
 import { LoginInput } from "./inputs/login-input";
 
@@ -22,6 +25,7 @@ export class SessionService {
 		private readonly prismaService: PrismaService,
 		private readonly redisService: RedisService,
 		private readonly configService: ConfigService,
+		private readonly verificationService: VerificationService,
 	) {}
 
 	public async findByUser(req: Request) {
@@ -101,46 +105,21 @@ export class SessionService {
 		if (!isValidPassword) {
 			throw new UnauthorizedException("Invalid password");
 		}
+		if (!user.isEmailVerified) {
+			await this.verificationService.sendVerificationToken(user);
+
+			throw new BadRequestException(
+				"Account is not verified. Please check your email to confirm it",
+			);
+		}
 
 		const metadata = getSessionMetadata(req, userAgent);
 
-		return new Promise((resolve, reject) => {
-			req.session.createdAt = new Date();
-			req.session.userId = user.id;
-			req.session.metadata = metadata;
-
-			req.session.save(err => {
-				if (err) {
-					return reject(
-						new InternalServerErrorException(
-							"Failed to save the session",
-						),
-					);
-				}
-
-				resolve(user);
-			});
-		});
+		return saveSession(req, user, metadata);
 	}
 
 	public async logout(req: Request) {
-		return new Promise((resolve, reject) => {
-			req.session.destroy(err => {
-				if (err) {
-					return reject(
-						new InternalServerErrorException(
-							"Failed to end the session",
-						),
-					);
-				}
-
-				req.res?.clearCookie(
-					this.configService.getOrThrow<string>("SESSION_NAME"),
-				);
-
-				resolve(true);
-			});
-		});
+		return destroySession(req, this.configService);
 	}
 
 	public clearSession(req: Request) {
