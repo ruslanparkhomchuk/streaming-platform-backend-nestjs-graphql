@@ -3,6 +3,7 @@ import { Module } from "@nestjs/common";
 import { ConfigModule, ConfigService } from "@nestjs/config";
 import { GraphQLModule } from "@nestjs/graphql";
 
+import { AccountDeactivationModule } from "@/modules/auth/account-deactivation/account-deactivation.module";
 import { AccountModule } from "@/modules/auth/account/account.module";
 import { PasswordRecoveryModule } from "@/modules/auth/password-recovery/password-recovery.module";
 import { SessionModule } from "@/modules/auth/session/session.module";
@@ -35,6 +36,7 @@ import { RedisModule } from "./redis/redis.module";
 		VerificationModule,
 		PasswordRecoveryModule,
 		TotpModule,
+		AccountDeactivationModule,
 	],
 })
 export class CoreModule {}
