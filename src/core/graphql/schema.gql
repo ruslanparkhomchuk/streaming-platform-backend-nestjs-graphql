@@ -61,6 +61,14 @@ input FiltersInput {
   take: Int
 }
 
+input GenerateStreamTokenInput {
+  channelId: String!
+}
+
+type GenerateStreamTokenModel {
+  token: String!
+}
+
 type LocationModel {
   city: String!
   country: String!
@@ -88,6 +96,7 @@ type Mutation {
   deactivateAccount(data: AccountDeactivationInput!): AuthModel!
   disableTotp: Boolean!
   enableTotp(data: EnableTotpInput!): Boolean!
+  generateStreamToken(data: GenerateStreamTokenInput!): GenerateStreamTokenModel!
   loginUser(data: LoginInput!): AuthModel!
   logoutUser: Boolean!
   newPassword(data: NewPasswordInput!): Boolean!

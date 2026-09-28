@@ -18,6 +18,8 @@ import type { GqlContext } from "@/shared/types/gql-context.type";
 
 import { ChangeStreamInfoInput } from "./inputs/change-stream-info.input";
 import { FiltersInput } from "./inputs/filters.input";
+import { GenerateStreamTokenInput } from "./inputs/generate-stream-token.input";
+import { GenerateStreamTokenModel } from "./models/generate-token-model";
 import { StreamModel } from "./models/stream.model";
 import { StreamService } from "./stream.service";
 
@@ -70,5 +72,13 @@ export class StreamResolver {
 		}
 
 		return stream.streamKey;
+	}
+
+	@Mutation(() => GenerateStreamTokenModel, { name: "generateStreamToken" })
+	public async generateToken(
+		@Context() { req }: GqlContext,
+		@Args("data") input: GenerateStreamTokenInput,
+	) {
+		return this.streamService.generateToken(req, input);
 	}
 }

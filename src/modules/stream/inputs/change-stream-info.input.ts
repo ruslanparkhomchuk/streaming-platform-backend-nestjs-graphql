@@ -11,5 +11,5 @@ export class ChangeStreamInfoInput {
 	@Field(() => String, { nullable: true })
 	@IsString()
 	@IsOptional()
-	public categoryId?: string;
+	public categoryId: string;
 }
