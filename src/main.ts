@@ -19,15 +19,6 @@ async function bootstrap() {
 
 	app.use(cookieParser(config.getOrThrow<string>("COOKIES_SECRET")));
 	app.use(
-		config.getOrThrow<string>("GRAPHQL_PREFIX"),
-		graphqlUploadExpress(),
-	);
-	app.useGlobalPipes(
-		new ValidationPipe({
-			transform: true,
-		}),
-	);
-	app.use(
 		session({
 			secret: config.getOrThrow<string>("SESSION_SECRET"),
 			name: config.getOrThrow<string>("SESSION_NAME"),
@@ -48,6 +39,16 @@ async function bootstrap() {
 				client: redis,
 				prefix: config.getOrThrow<string>("SESSION_FOLDER"),
 			}),
+		}),
+	);
+	app.use(
+		config.getOrThrow<string>("GRAPHQL_PREFIX"),
+		graphqlUploadExpress(),
+	);
+
+	app.useGlobalPipes(
+		new ValidationPipe({
+			transform: true,
 		}),
 	);
 
