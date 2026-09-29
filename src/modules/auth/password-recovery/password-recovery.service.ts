@@ -9,6 +9,7 @@ import type { Request } from "express";
 
 import { PrismaService } from "@/core/prisma/prisma.service";
 import { MailService } from "@/modules/libs/mail/mail.service";
+import { TelegramService } from "@/modules/libs/telegram/telegram.service";
 import { TokenType } from "@/prisma/generated";
 import { generateToken } from "@/shared/utils/generate-token.util";
 import { getSessionMetadata } from "@/shared/utils/session-metadata.util";
@@ -21,6 +22,7 @@ export class PasswordRecoveryService {
 	public constructor(
 		private readonly prismaService: PrismaService,
 		private readonly mailService: MailService,
+		private readonly telegramService: TelegramService,
 	) {}
 
 	public async resetPassword(
@@ -33,6 +35,9 @@ export class PasswordRecoveryService {
 		const user = await this.prismaService.user.findUnique({
 			where: {
 				email,
+			},
+			include: {
+				notificationSettings: true,
 			},
 		});
 
@@ -53,6 +58,17 @@ export class PasswordRecoveryService {
 			resetToken.token,
 			metadata,
 		);
+
+		if (
+			resetToken.user?.notificationSettings?.telegramNotifications &&
+			resetToken.user.telegramId
+		) {
+			await this.telegramService.sendPasswordResetToken(
+				resetToken.user.telegramId,
+				resetToken.token,
+				metadata,
+			);
+		}
 
 		return true;
 	}

@@ -8,6 +8,7 @@ import { verify } from "argon2";
 import type { Request } from "express";
 
 import { PrismaService } from "@/core/prisma/prisma.service";
+import { TelegramService } from "@/modules/libs/telegram/telegram.service";
 import { TokenType, type User } from "@/prisma/generated";
 import { generateToken } from "@/shared/utils/generate-token.util";
 import { getSessionMetadata } from "@/shared/utils/session-metadata.util";
@@ -23,6 +24,7 @@ export class AccountDeactivationService {
 		private readonly prismaService: PrismaService,
 		private readonly configService: ConfigService,
 		private readonly mailService: MailService,
+		private readonly telegramService: TelegramService,
 	) {}
 
 	public async deactivate(
@@ -117,6 +119,18 @@ export class AccountDeactivationService {
 			accountDeactivationToken.token,
 			metadata,
 		);
+
+		if (
+			accountDeactivationToken.user?.notificationSettings
+				?.telegramNotifications &&
+			accountDeactivationToken.user.telegramId
+		) {
+			await this.telegramService.sendAccountDeactivationToken(
+				accountDeactivationToken.user.telegramId,
+				accountDeactivationToken.token,
+				metadata,
+			);
+		}
 
 		return true;
 	}
