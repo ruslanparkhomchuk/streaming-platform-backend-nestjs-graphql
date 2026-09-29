@@ -60,4 +60,16 @@ export class AccountResolver {
 
 		return user.email;
 	}
+
+	@ResolveField(() => String, { nullable: true })
+	public telegramId(
+		@Parent() user: UserModel,
+		@Context() { req }: GqlContext,
+	) {
+		if (req?.session?.userId !== user.id) {
+			return null;
+		}
+
+		return user.telegramId;
+	}
 }

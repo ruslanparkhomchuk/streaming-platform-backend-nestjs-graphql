@@ -1,6 +1,8 @@
 import { Field, ID, ObjectType } from "@nestjs/graphql";
 
 import { FollowModel } from "@/modules/follow/models/follow.model";
+import { NotificationSettingsModel } from "@/modules/notification/models/notification-settings.model";
+import { NotificationModel } from "@/modules/notification/models/notification.model";
 import { StreamModel } from "@/modules/stream/models/stream.model";
 import type { User } from "@/prisma/generated";
 
@@ -27,6 +29,8 @@ export class UserModel implements User {
 	@Field(() => String, { nullable: true })
 	public bio: string;
 
+	public telegramId: string;
+
 	@Field(() => Boolean)
 	public isVerified: boolean;
 
@@ -44,17 +48,23 @@ export class UserModel implements User {
 	@Field(() => Date, { nullable: true })
 	public deactivatedAt: Date;
 
-	@Field(() => [SocialLinkModel])
+	@Field(() => [SocialLinkModel], { nullable: true })
 	public socialLinks: SocialLinkModel[];
 
-	@Field(() => [FollowModel], { nullable: true })
-	public followers?: FollowModel[];
-
-	@Field(() => [FollowModel], { nullable: true })
-	public followings?: FollowModel[];
-
-	@Field(() => StreamModel)
+	@Field(() => StreamModel, { nullable: true })
 	public stream: StreamModel;
+
+	@Field(() => [NotificationModel], { nullable: true })
+	public notifications: NotificationModel[];
+
+	@Field(() => NotificationSettingsModel, { nullable: true })
+	public notificationSettings: NotificationSettingsModel;
+
+	@Field(() => [FollowModel], { nullable: true })
+	public followers: FollowModel[];
+
+	@Field(() => [FollowModel], { nullable: true })
+	public followings: FollowModel[];
 
 	@Field(() => Date)
 	public createdAt: Date;

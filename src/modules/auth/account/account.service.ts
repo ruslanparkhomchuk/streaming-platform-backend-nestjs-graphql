@@ -66,6 +66,9 @@ export class AccountService {
 						title: `Stream ${username}`,
 					},
 				},
+				notificationSettings: {
+					create: {},
+				},
 			},
 		});
 

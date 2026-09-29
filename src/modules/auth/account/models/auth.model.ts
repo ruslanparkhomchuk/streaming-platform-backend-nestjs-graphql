@@ -5,8 +5,8 @@ import { UserModel } from "./user.model";
 @ObjectType()
 export class AuthModel {
 	@Field(() => UserModel, { nullable: true })
-	public user?: UserModel;
+	public user: UserModel;
 
 	@Field(() => String, { nullable: true })
-	public message?: string;
+	public message: string;
 }
