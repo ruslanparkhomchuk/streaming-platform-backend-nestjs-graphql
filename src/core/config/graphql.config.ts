@@ -2,6 +2,7 @@ import type { ApolloDriverConfig } from "@nestjs/apollo";
 import { ConfigService } from "@nestjs/config";
 import { join } from "path";
 
+import type { GqlContext } from "@/shared/types/gql-context.type";
 import { isDev } from "@/shared/utils/is-dev.util";
 
 export function getGraphQLConfig(
@@ -12,6 +13,7 @@ export function getGraphQLConfig(
 		path: configService.getOrThrow<string>("GRAPHQL_PREFIX"),
 		autoSchemaFile: join(process.cwd(), "src/core/graphql/schema.gql"),
 		sortSchema: true,
-		context: ({ req, res }) => ({ req, res }),
+		context: ({ req, res }: GqlContext) => ({ req, res }),
+		installSubscriptionHandlers: true,
 	};
 }

@@ -67,7 +67,7 @@ export class StreamResolver {
 		@Parent() stream: StreamModel,
 		@Context() { req }: GqlContext,
 	) {
-		if (!req.session.userId || req.session.userId !== stream.userId) {
+		if (!req?.session?.userId || req.session.userId !== stream.userId) {
 			return null;
 		}
 
