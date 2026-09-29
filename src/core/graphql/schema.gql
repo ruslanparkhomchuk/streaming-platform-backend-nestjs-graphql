@@ -89,6 +89,16 @@ input FiltersInput {
   take: Int
 }
 
+type FollowModel {
+  createdAt: DateTime!
+  follower: UserModel
+  followerId: String!
+  following: UserModel
+  followingId: String!
+  id: ID!
+  updatedAt: DateTime!
+}
+
 input GenerateStreamTokenInput {
   channelId: String!
 }
@@ -125,6 +135,7 @@ type Mutation {
   deactivateAccount(data: AccountDeactivationInput!): AuthModel!
   disableTotp: Boolean!
   enableTotp(data: EnableTotpInput!): Boolean!
+  followChannel(channelId: String!): Boolean!
   generateStreamToken(data: GenerateStreamTokenInput!): GenerateStreamTokenModel!
   loginUser(data: LoginInput!): AuthModel!
   logoutUser: Boolean!
@@ -136,6 +147,7 @@ type Mutation {
   reorderSocialLinks(list: [SocialLinkOrderInput!]!): Boolean!
   resetPassword(data: ResetPasswordInput!): Boolean!
   sendChatMessage(data: SendMessageInput!): ChatMessageModel!
+  unfollowChannel(channelId: String!): Boolean!
   updateSocialLink(data: SocialLinkInput!, id: String!): Boolean!
   verifyAccount(data: VerificationInput!): AuthModel!
 }
@@ -152,6 +164,8 @@ type Query {
   findCategoryBySlug(slug: String!): CategoryModel!
   findChatMessagesByStream(streamId: String!): [ChatMessageModel!]!
   findCurrentSession: SessionModel!
+  findMyFollowers: [FollowModel!]!
+  findMyFollowings: [FollowModel!]!
   findProfile: UserModel!
   findRandomCategories: [CategoryModel!]!
   findRandomStreams: [StreamModel!]!
@@ -240,7 +254,7 @@ type UserModel {
   createdAt: DateTime!
   deactivatedAt: DateTime
   displayName: String!
-  email: String!
+  email: String
   id: ID!
   isDeactivated: Boolean!
   isEmailVerified: Boolean!

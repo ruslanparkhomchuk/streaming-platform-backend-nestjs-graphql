@@ -13,6 +13,7 @@ import { VerificationModule } from "@/modules/auth/verification/verification.mod
 import { CategoryModule } from "@/modules/category/category.module";
 import { ChatModule } from "@/modules/chat/chat.module";
 import { CronModule } from "@/modules/cron/cron.module";
+import { FollowModule } from "@/modules/follow/follow.module";
 import { LivekitModule } from "@/modules/libs/livekit/livekit.module";
 import { MailModule } from "@/modules/libs/mail/mail.module";
 import { StorageModule } from "@/modules/libs/storage/storage.module";
@@ -61,6 +62,7 @@ import { RedisModule } from "./redis/redis.module";
 		WebhookModule,
 		CategoryModule,
 		ChatModule,
+		FollowModule,
 	],
 })
 export class CoreModule {}

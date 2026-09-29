@@ -10,7 +10,6 @@ export class UserModel implements User {
 	@Field(() => ID)
 	public id: string;
 
-	@Field(() => String)
 	public email: string;
 
 	public password: string;

@@ -1,8 +1,17 @@
-import { Args, Mutation, Query, Resolver } from "@nestjs/graphql";
+import {
+	Args,
+	Context,
+	Mutation,
+	Parent,
+	Query,
+	ResolveField,
+	Resolver,
+} from "@nestjs/graphql";
 
 import type { User } from "@/prisma/generated";
 import { Authorization } from "@/shared/decorators/auth.decorator";
 import { Authorized } from "@/shared/decorators/authorized.decorator";
+import type { GqlContext } from "@/shared/types/gql-context.type";
 
 import { AccountService } from "./account.service";
 import { ChangeEmailInput } from "./inputs/change-email.input";
@@ -10,7 +19,7 @@ import { ChangePasswordInput } from "./inputs/change-password.input";
 import { CreateUserInput } from "./inputs/create-user.input";
 import { UserModel } from "./models/user.model";
 
-@Resolver("Account")
+@Resolver(() => UserModel)
 export class AccountResolver {
 	public constructor(private readonly accountService: AccountService) {}
 
@@ -41,5 +50,14 @@ export class AccountResolver {
 		@Args("data") input: ChangePasswordInput,
 	) {
 		return this.accountService.changePassword(user, input);
+	}
+
+	@ResolveField(() => String, { nullable: true })
+	public email(@Parent() user: UserModel, @Context() { req }: GqlContext) {
+		if (req?.session?.userId !== user.id) {
+			return null;
+		}
+
+		return user.email;
 	}
 }
