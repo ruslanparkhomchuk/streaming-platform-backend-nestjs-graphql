@@ -1,4 +1,4 @@
-import type { User } from "@/prisma/generated";
+import type { SponsorshipPlan, User } from "@/prisma/generated";
 import type { SessionMetadata } from "@/shared/types/session-metadata.types";
 import { escapeHtml } from "@/shared/utils/escape-html.util";
 
@@ -69,4 +69,11 @@ export const MESSAGES = {
 		`Watch here: <a href="${process.env.SITE_URL_TELEGRAM}/${escapeHtml(channel.username)}">Go to the stream</a>`,
 	newFollowing: (follower: User, followersCount: number) =>
 		`<b>You have a new follower!</b>\n\nIt's user <a href="${process.env.SITE_URL_TELEGRAM}/${escapeHtml(follower.username)}">${escapeHtml(follower.displayName)}</a>\n\nTotal followers on your channel: ${followersCount}`,
+	newSponsorship: (plan: SponsorshipPlan, sponsor: User) =>
+		`<b>🎉 New sponsorship!</b>\n\n` +
+		`You've received a new sponsorship on the <b>${escapeHtml(plan.title)}</b> plan.\n` +
+		`💰 Amount: <b>${plan.price} €</b>\n` +
+		`👤 Sponsor: <a href="${process.env.SITE_URL_TELEGRAM}/${escapeHtml(sponsor.username)}">${escapeHtml(sponsor.displayName)}</a>\n` +
+		`📅 Date: <b>${new Date().toLocaleDateString()} at ${new Date().toLocaleTimeString()}</b>\n\n` +
+		`Thanks for your work and support on Streaming Platform!`,
 } as const;

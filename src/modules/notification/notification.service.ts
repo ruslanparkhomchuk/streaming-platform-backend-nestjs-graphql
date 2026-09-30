@@ -1,7 +1,12 @@
 import { Injectable } from "@nestjs/common";
 
 import { PrismaService } from "@/core/prisma/prisma.service";
-import { NotificationType, TokenType, type User } from "@/prisma/generated";
+import {
+	NotificationType,
+	type SponsorshipPlan,
+	TokenType,
+	type User,
+} from "@/prisma/generated";
 import { escapeHtml } from "@/shared/utils/escape-html.util";
 import { generateToken } from "@/shared/utils/generate-token.util";
 
@@ -68,6 +73,27 @@ export class NotificationService {
 				message: `<b className='font-medium'>You have a new follower!</b>
 				<p>It's user <a href='/${escapeHtml(follower.username)}' className='font-semibold'>${escapeHtml(follower.displayName)}</a>.</p>`,
 				type: NotificationType.NEW_FOLLOWER,
+				user: {
+					connect: {
+						id: userId,
+					},
+				},
+			},
+		});
+
+		return notification;
+	}
+
+	public async createNewSponsorship(
+		userId: string,
+		plan: SponsorshipPlan,
+		sponsor: User,
+	) {
+		const notification = await this.prismaService.notification.create({
+			data: {
+				message: `<b className='font-medium'>You have a new sponsor!</b>
+			<p>User <a href='/${escapeHtml(sponsor.username)}' className='font-semibold'>${escapeHtml(sponsor.displayName)}</a> became your sponsor with the <strong>${escapeHtml(plan.title)}</strong> plan.</p>`,
+				type: NotificationType.NEW_SPONSORSHIP,
 				user: {
 					connect: {
 						id: userId,
