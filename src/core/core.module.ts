@@ -2,6 +2,7 @@ import { ApolloDriver } from "@nestjs/apollo";
 import { Module } from "@nestjs/common";
 import { ConfigModule, ConfigService } from "@nestjs/config";
 import { GraphQLModule } from "@nestjs/graphql";
+import { LoggerModule } from "nestjs-pino";
 
 import { AccountDeactivationModule } from "@/modules/auth/account-deactivation/account-deactivation.module";
 import { AccountModule } from "@/modules/auth/account/account.module";
@@ -31,6 +32,7 @@ import { IS_DEV_ENV } from "@/shared/utils/is-dev.util";
 
 import { getGraphQLConfig } from "./config/graphql.config";
 import { getLiveKitConfig } from "./config/livekit.config";
+import { getPinoConfig } from "./config/pino.config";
 import { getStripeConfig } from "./config/stripe.config";
 import { PrismaModule } from "./prisma/prisma.module";
 import { RedisModule } from "./redis/redis.module";
@@ -40,6 +42,11 @@ import { RedisModule } from "./redis/redis.module";
 		ConfigModule.forRoot({
 			ignoreEnvFile: !IS_DEV_ENV,
 			isGlobal: true,
+		}),
+		LoggerModule.forRootAsync({
+			imports: [ConfigModule],
+			useFactory: getPinoConfig,
+			inject: [ConfigService],
 		}),
 		GraphQLModule.forRootAsync({
 			driver: ApolloDriver,

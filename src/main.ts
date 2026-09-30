@@ -5,6 +5,7 @@ import RedisStore from "connect-redis";
 import cookieParser from "cookie-parser";
 import session from "express-session";
 import graphqlUploadExpress from "graphql-upload/graphqlUploadExpress.mjs";
+import { Logger } from "nestjs-pino";
 
 import { CoreModule } from "./core/core.module";
 import { RedisService } from "./core/redis/redis.service";
@@ -12,7 +13,10 @@ import { ms, type StringValue } from "./shared/utils/ms.util";
 import { parseBoolean } from "./shared/utils/parse-boolean.util";
 
 async function bootstrap() {
-	const app = await NestFactory.create(CoreModule, { rawBody: true });
+	const app = await NestFactory.create(CoreModule, {
+		rawBody: true,
+		bufferLogs: true,
+	});
 
 	const config = app.get(ConfigService);
 	const redis = app.get(RedisService);
@@ -51,6 +55,8 @@ async function bootstrap() {
 			transform: true,
 		}),
 	);
+
+	app.useLogger(app.get(Logger));
 
 	app.enableCors({
 		origin: config.getOrThrow<string>("ALLOWED_ORIGIN"),
