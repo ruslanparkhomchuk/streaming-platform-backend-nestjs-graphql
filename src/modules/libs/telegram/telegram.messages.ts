@@ -76,4 +76,12 @@ export const MESSAGES = {
 		`👤 Sponsor: <a href="${process.env.SITE_URL_TELEGRAM}/${escapeHtml(sponsor.username)}">${escapeHtml(sponsor.displayName)}</a>\n` +
 		`📅 Date: <b>${new Date().toLocaleDateString()} at ${new Date().toLocaleTimeString()}</b>\n\n` +
 		`Thanks for your work and support on Streaming Platform!`,
+	enableTwoFactor: () =>
+		`🔐 <b>Secure your account!</b>\n\n` +
+		`Enable two-factor authentication in your <a href="${process.env.SITE_URL_TELEGRAM}/dashboard/settings">account settings</a>.`,
+	verifyChannel: () =>
+		`<b>🎉 Congratulations! Your channel is verified</b>\n\n` +
+		`We're happy to let you know that your channel is now verified and has the official badge.\n\n` +
+		`The verification badge confirms that your channel is authentic and helps viewers trust it.\n\n` +
+		`Thanks for being with us and growing your channel with Streaming Platform!`,
 } as const;

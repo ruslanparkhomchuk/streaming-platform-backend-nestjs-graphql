@@ -8,7 +8,7 @@ import {
 	Tailwind,
 	Text,
 } from "@react-email/components";
-import { Html } from "@react-email/html"
+import { Html } from "@react-email/html";
 import * as React from "react";
 
 interface AccountDeletionTemplateProps {

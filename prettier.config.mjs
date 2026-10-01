@@ -14,6 +14,7 @@ export default {
 		"classProperties",
 		"decorators-legacy",
 		"typescript",
+		"jsx",
 	],
 	importOrder: ["<THIRD_PARTY_MODULES>", "^@/(.*)$", "^../(.*)", "^./(.*)"],
 	plugins: ["@trivago/prettier-plugin-sort-imports"],
