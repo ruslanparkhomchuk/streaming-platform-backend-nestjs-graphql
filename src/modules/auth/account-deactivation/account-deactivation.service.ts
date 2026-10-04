@@ -8,6 +8,7 @@ import { verify } from "argon2";
 import type { Request } from "express";
 
 import { PrismaService } from "@/core/prisma/prisma.service";
+import { RedisService } from "@/core/redis/redis.service";
 import { TelegramService } from "@/modules/libs/telegram/telegram.service";
 import { TokenType, type User } from "@/prisma/generated";
 import { generateToken } from "@/shared/utils/generate-token.util";
@@ -22,6 +23,7 @@ import { AccountDeactivationInput } from "./inputs/account-deactivation.input";
 export class AccountDeactivationService {
 	public constructor(
 		private readonly prismaService: PrismaService,
+		private readonly redisService: RedisService,
 		private readonly configService: ConfigService,
 		private readonly mailService: MailService,
 		private readonly telegramService: TelegramService,
@@ -80,7 +82,7 @@ export class AccountDeactivationService {
 			throw new NotFoundException("Token not found");
 		}
 
-		await this.prismaService.user.update({
+		const user = await this.prismaService.user.update({
 			where: {
 				id: existingToken.userId,
 			},
@@ -97,10 +99,12 @@ export class AccountDeactivationService {
 			},
 		});
 
+		await this.clearSessions(user.id);
+
 		return destroySession(req, this.configService);
 	}
 
-	public async sendAccountDeactivationToken(
+	private async sendAccountDeactivationToken(
 		req: Request,
 		user: User,
 		userAgent: string,
@@ -133,5 +137,29 @@ export class AccountDeactivationService {
 		}
 
 		return true;
+	}
+
+	private async clearSessions(userId: string) {
+		const prefix = this.configService.getOrThrow<string>("SESSION_FOLDER");
+
+		const keys = await this.redisService.keys(`${prefix}*`);
+
+		for (const key of keys) {
+			const sessionData = await this.redisService.get(key);
+
+			if (!sessionData) {
+				continue;
+			}
+
+			try {
+				const session = JSON.parse(sessionData) as { userId?: string };
+
+				if (session.userId === userId) {
+					await this.redisService.del(key);
+				}
+			} catch {
+				continue;
+			}
+		}
 	}
 }
