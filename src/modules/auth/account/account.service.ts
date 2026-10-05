@@ -28,6 +28,7 @@ export class AccountService {
 			},
 			include: {
 				socialLinks: true,
+				notificationSettings: true,
 			},
 		});
 
