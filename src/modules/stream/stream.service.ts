@@ -128,7 +128,7 @@ export class StreamService {
 
 		const buffer = Buffer.concat(chunks);
 
-		const fileName = `streams/${user.username}.webp`;
+		const fileName = `streams/${user.username}-${Date.now()}.webp`;
 
 		if (filename && filename.toLowerCase().endsWith(".gif")) {
 			const processedBuffer = await sharp(buffer, { animated: true })

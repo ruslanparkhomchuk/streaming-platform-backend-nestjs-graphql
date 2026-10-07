@@ -51,9 +51,9 @@ export class StreamResolver {
 	public async changeThumbnail(
 		@Authorized() user: User,
 		@Args("thumbnail", { type: () => GraphQLUpload }, FileValidationPipe)
-		thumbnail: Promise<FileUpload>,
+		thumbnail: FileUpload,
 	) {
-		return this.streamService.changeThumbnail(user, await thumbnail);
+		return this.streamService.changeThumbnail(user, thumbnail);
 	}
 
 	@Authorization()

@@ -24,9 +24,9 @@ export class ProfileResolver {
 	public async changeAvatar(
 		@Authorized() user: User,
 		@Args("avatar", { type: () => GraphQLUpload }, FileValidationPipe)
-		avatar: Promise<FileUpload>,
+		avatar: FileUpload,
 	) {
-		return this.profileService.changeAvatar(user, await avatar);
+		return this.profileService.changeAvatar(user, avatar);
 	}
 
 	@Authorization()
