@@ -372,6 +372,8 @@ type UserModel {
   notificationSettings: NotificationSettingsModel
   notifications: [NotificationModel!]
   socialLinks: [SocialLinkModel!]
+  sponsorshipPlans: [PlanModel!]
+  sponsorshipSubscriptions: [SubscriptionModel!]
   stream: StreamModel
   telegramId: String
   updatedAt: DateTime!

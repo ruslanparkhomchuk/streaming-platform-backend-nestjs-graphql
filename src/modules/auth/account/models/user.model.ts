@@ -3,6 +3,8 @@ import { Field, ID, ObjectType } from "@nestjs/graphql";
 import { FollowModel } from "@/modules/follow/models/follow.model";
 import { NotificationSettingsModel } from "@/modules/notification/models/notification-settings.model";
 import { NotificationModel } from "@/modules/notification/models/notification.model";
+import { PlanModel } from "@/modules/sponsorship/plan/models/plan.model";
+import { SubscriptionModel } from "@/modules/sponsorship/subscription/models/subscription.model";
 import { StreamModel } from "@/modules/stream/models/stream.model";
 import type { User } from "@/prisma/generated";
 
@@ -65,6 +67,12 @@ export class UserModel implements User {
 
 	@Field(() => [FollowModel], { nullable: true })
 	public followings: FollowModel[];
+
+	@Field(() => [PlanModel], { nullable: true })
+	public sponsorshipPlans: PlanModel[];
+
+	@Field(() => [SubscriptionModel], { nullable: true })
+	public sponsorshipSubscriptions: SubscriptionModel[];
 
 	@Field(() => Date)
 	public createdAt: Date;

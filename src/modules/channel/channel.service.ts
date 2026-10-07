@@ -43,6 +43,8 @@ export class ChannelService {
 					},
 				},
 				followers: true,
+				sponsorshipPlans: true,
+				sponsorshipSubscriptions: true,
 			},
 		});
 
