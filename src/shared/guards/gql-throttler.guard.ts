@@ -2,11 +2,27 @@ import { type ExecutionContext, Injectable } from "@nestjs/common";
 import { type GqlContextType, GqlExecutionContext } from "@nestjs/graphql";
 import { ThrottlerGuard } from "@nestjs/throttler";
 import type { Request, Response } from "express";
+import type { GraphQLResolveInfo } from "graphql";
 
 import type { GqlContext } from "../types/gql-context.type";
 
 @Injectable()
 export class GqlThrottlerGuard extends ThrottlerGuard {
+	protected shouldSkip(context: ExecutionContext): Promise<boolean> {
+		const type = context.getType<GqlContextType>();
+
+		if (type === "graphql") {
+			const info =
+				GqlExecutionContext.create(
+					context,
+				).getInfo<GraphQLResolveInfo>();
+
+			return Promise.resolve(info.operation.operation === "subscription");
+		}
+
+		return Promise.resolve(type !== "http");
+	}
+
 	protected getRequestResponse(context: ExecutionContext): {
 		req: Request;
 		res: Response;
@@ -32,22 +48,5 @@ export class GqlThrottlerGuard extends ThrottlerGuard {
 		return Promise.resolve(
 			(Array.isArray(cfIp) ? cfIp[0] : cfIp) ?? req.ip ?? "",
 		);
-	}
-
-	public async canActivate(context: ExecutionContext): Promise<boolean> {
-		const type = context.getType<GqlContextType>();
-
-		if (type === "graphql") {
-			const ctx =
-				GqlExecutionContext.create(context).getContext<
-					Partial<GqlContext>
-				>();
-
-			if (!ctx.req) return true;
-		} else if (type !== "http") {
-			return true;
-		}
-
-		return super.canActivate(context);
 	}
 }
