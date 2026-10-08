@@ -26,6 +26,14 @@ export class GqlThrottlerGuard extends ThrottlerGuard {
 		};
 	}
 
+	protected getTracker(req: Request): Promise<string> {
+		const cfIp = req.headers["cf-connecting-ip"];
+
+		return Promise.resolve(
+			(Array.isArray(cfIp) ? cfIp[0] : cfIp) ?? req.ip ?? "",
+		);
+	}
+
 	public async canActivate(context: ExecutionContext): Promise<boolean> {
 		const type = context.getType<GqlContextType>();
 
