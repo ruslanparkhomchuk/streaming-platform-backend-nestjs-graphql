@@ -308,85 +308,92 @@ async function main() {
 			"nora",
 		];
 
-		await prisma.$transaction(async tx => {
-			for (const username of usernames) {
-				const randomCategory =
-					categoriesBySlug[
-						Object.keys(categoriesBySlug)[
-							Math.floor(
-								Math.random() *
-									Object.keys(categoriesBySlug).length,
-							)
-						]
-					];
+		const password = await hash("12345678");
 
-				const userExists = await tx.user.findUnique({
-					where: {
-						username,
-					},
-				});
-
-				if (!userExists) {
-					const createdUser = await tx.user.create({
-						data: {
-							email: `${username}@streamingplatform.site`,
-							password: await hash("12345678"),
-							username,
-							displayName: username,
-							avatar: `channels/${username}.webp`,
-							isEmailVerified: true,
-							socialLinks: {
-								createMany: {
-									data: [
-										{
-											title: "Telegram",
-											url: `https://t.me/${username}`,
-											position: 1,
-										},
-										{
-											title: "YouTube",
-											url: `https://youtube.com/@${username}`,
-											position: 2,
-										},
-									],
-								},
-							},
-							notificationSettings: {
-								create: {},
-							},
-						},
-					});
-
-					const randomTitles = streamTitles[randomCategory.slug];
-
-					const randomTitle =
-						randomTitles[
-							Math.floor(Math.random() * randomTitles.length)
+		await prisma.$transaction(
+			async tx => {
+				for (const username of usernames) {
+					const randomCategory =
+						categoriesBySlug[
+							Object.keys(categoriesBySlug)[
+								Math.floor(
+									Math.random() *
+										Object.keys(categoriesBySlug).length,
+								)
+							]
 						];
 
-					await tx.stream.create({
-						data: {
-							title: randomTitle,
-							thumbnailUrl: `streams/${createdUser.username}.webp`,
-							user: {
-								connect: {
-									id: createdUser.id,
-								},
-							},
-							category: {
-								connect: {
-									id: randomCategory.id,
-								},
-							},
+					const userExists = await tx.user.findUnique({
+						where: {
+							username,
 						},
 					});
 
-					Logger.log(
-						`User "${createdUser.username}" and their stream created successfully`,
-					);
+					if (!userExists) {
+						const createdUser = await tx.user.create({
+							data: {
+								email: `${username}@streamingplatform.site`,
+								password,
+								username,
+								displayName: username,
+								avatar: `channels/${username}.webp`,
+								isEmailVerified: true,
+								socialLinks: {
+									createMany: {
+										data: [
+											{
+												title: "Telegram",
+												url: `https://t.me/${username}`,
+												position: 1,
+											},
+											{
+												title: "YouTube",
+												url: `https://youtube.com/@${username}`,
+												position: 2,
+											},
+										],
+									},
+								},
+								notificationSettings: {
+									create: {},
+								},
+							},
+						});
+
+						const randomTitles = streamTitles[randomCategory.slug];
+
+						const randomTitle =
+							randomTitles[
+								Math.floor(Math.random() * randomTitles.length)
+							];
+
+						await tx.stream.create({
+							data: {
+								title: randomTitle,
+								thumbnailUrl: `streams/${createdUser.username}.webp`,
+								user: {
+									connect: {
+										id: createdUser.id,
+									},
+								},
+								category: {
+									connect: {
+										id: randomCategory.id,
+									},
+								},
+							},
+						});
+
+						Logger.log(
+							`User "${createdUser.username}" and their stream created successfully`,
+						);
+					}
 				}
-			}
-		});
+			},
+			{
+				timeout: 60_000,
+			},
+		);
 
 		Logger.log("Database seeding completed successfully");
 	} catch (error) {
