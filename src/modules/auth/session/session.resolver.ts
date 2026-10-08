@@ -1,4 +1,5 @@
 import { Args, Context, Mutation, Query, Resolver } from "@nestjs/graphql";
+import { Throttle } from "@nestjs/throttler";
 
 import { Authorization } from "@/shared/decorators/auth.decorator";
 import { UserAgent } from "@/shared/decorators/user-agent.decorator";
@@ -26,6 +27,7 @@ export class SessionResolver {
 		return this.sessionService.findCurrent(req);
 	}
 
+	@Throttle({ default: { limit: 10, ttl: 60_000 } })
 	@Mutation(() => AuthModel, { name: "loginUser" })
 	public async login(
 		@Context() { req }: GqlContext,

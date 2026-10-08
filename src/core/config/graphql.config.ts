@@ -11,7 +11,9 @@ export function getGraphQLConfig(
 	return {
 		playground: isDev(configService),
 		path: configService.getOrThrow<string>("GRAPHQL_PREFIX"),
-		autoSchemaFile: join(process.cwd(), "src/core/graphql/schema.gql"),
+		autoSchemaFile: isDev(configService)
+			? join(process.cwd(), "src/core/graphql/schema.gql")
+			: true,
 		sortSchema: true,
 		context: ({ req, res }: GqlContext) => ({ req, res }),
 		installSubscriptionHandlers: true,

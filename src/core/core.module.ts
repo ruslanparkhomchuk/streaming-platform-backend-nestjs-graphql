@@ -1,7 +1,9 @@
 import { ApolloDriver } from "@nestjs/apollo";
 import { Module } from "@nestjs/common";
 import { ConfigModule, ConfigService } from "@nestjs/config";
+import { APP_GUARD } from "@nestjs/core";
 import { GraphQLModule } from "@nestjs/graphql";
+import { ThrottlerModule } from "@nestjs/throttler";
 import { LoggerModule } from "nestjs-pino";
 
 import { AccountDeactivationModule } from "@/modules/auth/account-deactivation/account-deactivation.module";
@@ -28,12 +30,14 @@ import { TransactionModule } from "@/modules/sponsorship/transaction/transaction
 import { IngressModule } from "@/modules/stream/ingress/ingress.module";
 import { StreamModule } from "@/modules/stream/stream.module";
 import { WebhookModule } from "@/modules/webhook/webhook.module";
+import { GqlThrottlerGuard } from "@/shared/guards/gql-throttler.guard";
 import { IS_DEV_ENV } from "@/shared/utils/is-dev.util";
 
 import { getGraphQLConfig } from "./config/graphql.config";
 import { getLiveKitConfig } from "./config/livekit.config";
 import { getPinoConfig } from "./config/pino.config";
 import { getStripeConfig } from "./config/stripe.config";
+import { getThrottlerConfig } from "./config/throttler.config";
 import { PrismaModule } from "./prisma/prisma.module";
 import { RedisModule } from "./redis/redis.module";
 
@@ -47,6 +51,9 @@ import { RedisModule } from "./redis/redis.module";
 			imports: [ConfigModule],
 			useFactory: getPinoConfig,
 			inject: [ConfigService],
+		}),
+		ThrottlerModule.forRootAsync({
+			useFactory: getThrottlerConfig,
 		}),
 		GraphQLModule.forRootAsync({
 			driver: ApolloDriver,
@@ -90,6 +97,12 @@ import { RedisModule } from "./redis/redis.module";
 		PlanModule,
 		TransactionModule,
 		SubscriptionModule,
+	],
+	providers: [
+		{
+			provide: APP_GUARD,
+			useClass: GqlThrottlerGuard,
+		},
 	],
 })
 export class CoreModule {}

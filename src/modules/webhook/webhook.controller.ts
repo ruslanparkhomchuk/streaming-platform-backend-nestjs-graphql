@@ -8,9 +8,11 @@ import {
 	RawBody,
 	UnauthorizedException,
 } from "@nestjs/common";
+import { SkipThrottle } from "@nestjs/throttler";
 
 import { WebhookService } from "./webhook.service";
 
+@SkipThrottle()
 @Controller("webhook")
 export class WebhookController {
 	public constructor(private readonly webhookService: WebhookService) {}
