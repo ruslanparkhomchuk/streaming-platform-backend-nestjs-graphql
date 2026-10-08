@@ -45,10 +45,10 @@ export function VerifyChannelTemplate() {
 						<Text className="text-gray-600">
 							If you have any questions, write to us at{" "}
 							<Link
-								href="mailto:help@streamingplatform.com"
+								href="mailto:help@streamingplatform.site"
 								className="text-[#18b9ae] underline"
 							>
-								help@streamingplatform.com
+								help@streamingplatform.site
 							</Link>
 							.
 						</Text>

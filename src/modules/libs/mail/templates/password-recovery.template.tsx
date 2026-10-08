@@ -77,10 +77,10 @@ export function PasswordRecoveryTemplate({
 							If you have any questions or run into any problems,
 							feel free to contact our support team at{" "}
 							<Link
-								href="mailto:help@streamingplatform.com"
+								href="mailto:help@streamingplatform.site"
 								className="text-[#18b9ae] underline"
 							>
-								help@streamingplatform.com
+								help@streamingplatform.site
 							</Link>
 							.
 						</Text>

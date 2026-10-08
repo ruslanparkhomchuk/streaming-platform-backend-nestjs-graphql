@@ -20,7 +20,7 @@ export function getMailerConfig(configService: ConfigService): MailerOptions {
 					},
 		},
 		defaults: {
-			from: `"Streaming Platform" <${configService.getOrThrow<string>("MAIL_LOGIN")}>`,
+			from: `"Streaming Platform" <${configService.getOrThrow<string>("MAIL_FROM")}>`,
 		},
 	};
 }
