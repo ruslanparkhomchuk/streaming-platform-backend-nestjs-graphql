@@ -1,6 +1,7 @@
 import { ValidationPipe } from "@nestjs/common";
 import { ConfigService } from "@nestjs/config";
 import { NestFactory } from "@nestjs/core";
+import type { NestExpressApplication } from "@nestjs/platform-express";
 import RedisStore from "connect-redis";
 import cookieParser from "cookie-parser";
 import session from "express-session";
@@ -13,13 +14,15 @@ import { ms, type StringValue } from "./shared/utils/ms.util";
 import { parseBoolean } from "./shared/utils/parse-boolean.util";
 
 async function bootstrap() {
-	const app = await NestFactory.create(CoreModule, {
+	const app = await NestFactory.create<NestExpressApplication>(CoreModule, {
 		rawBody: true,
 		bufferLogs: true,
 	});
 
 	const config = app.get(ConfigService);
 	const redis = app.get(RedisService);
+
+	app.set("trust proxy", true);
 
 	app.use(cookieParser(config.getOrThrow<string>("COOKIES_SECRET")));
 	app.use(
