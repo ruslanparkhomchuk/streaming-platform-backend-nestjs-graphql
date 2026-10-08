@@ -17,5 +17,6 @@ export function getGraphQLConfig(
 		sortSchema: true,
 		context: ({ req, res }: GqlContext) => ({ req, res }),
 		installSubscriptionHandlers: true,
+		introspection: true,
 	};
 }
